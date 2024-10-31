@@ -61,5 +61,10 @@ public class LocationCRUD {
         db.delete("locations", null, null);
         db.close();
     }
+    public void deleteLocation(int locationId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete("locations", "id = ?", new String[]{String.valueOf(locationId)});
+        db.close();
+    }
 
 }
