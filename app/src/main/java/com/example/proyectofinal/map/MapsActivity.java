@@ -11,33 +11,34 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+
 import com.example.proyectofinal.R;
 import com.example.proyectofinal.model.Location;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
-    private LocationCRUD locationCRUD; // Declarar la variable
-    private FusedLocationProviderClient fusedLocationClient; // Declarar fusedLocationClient
+    private LocationCRUD locationCRUD;
+    private FusedLocationProviderClient fusedLocationClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        locationCRUD = new LocationCRUD(this); // Inicializa locationCRUD
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this); // Inicializa fusedLocationClient
+        locationCRUD = new LocationCRUD(this);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -50,7 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         enableMyLocation();
-        loadMarkers(); // Asegúrate de que solo se llama después de habilitar la ubicación correctamente.
+        loadMarkers();
     }
 
     private void enableMyLocation() {
@@ -63,27 +64,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             // Obtener la última ubicación conocida
             fusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<android.location.Location>() {
-                        @Override
-                        public void onSuccess(android.location.Location location) {
-                            if (location != null) {
-                                double latitude = location.getLatitude();
-                                double longitude = location.getLongitude();
-                                Log.d("MapsActivity", "Ubicación obtenida: " + latitude + ", " + longitude);
-                                // Puedes usar estas coordenadas para guardar la ubicación
-                            } else {
-                                Log.d("MapsActivity", "No se pudo obtener la ubicación");
-                            }
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+                            double latitude = location.getLatitude();
+                            double longitude = location.getLongitude();
+                            Log.d("MapsActivity", "Ubicación obtenida: " + latitude + ", " + longitude);
+                            // Aquí puedes usar las coordenadas para guardar la ubicación
+                        } else {
+                            Log.d("MapsActivity", "No se pudo obtener la ubicación");
                         }
                     });
         }
     }
 
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults); // Llamada al método de la clase padre
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == REQUEST_LOCATION_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -93,8 +89,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
-
-
 
     private void loadMarkers() {
         List<Location> locations = locationCRUD.getAllLocations();
@@ -118,7 +112,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return true;
         });
     }
-
-
-
 }

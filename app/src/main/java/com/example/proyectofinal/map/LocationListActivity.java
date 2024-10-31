@@ -1,13 +1,12 @@
 package com.example.proyectofinal.map;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,6 +29,10 @@ public class LocationListActivity extends AppCompatActivity {
         locationListView = findViewById(R.id.locationListView);
         locationCRUD = new LocationCRUD(this);
         locations = locationCRUD.getAllLocations();
+
+        if (locations.isEmpty()) {
+            Toast.makeText(this, "No hay ubicaciones guardadas", Toast.LENGTH_SHORT).show();
+        }
 
         List<String> locationNames = new ArrayList<>();
         for (Location loc : locations) {

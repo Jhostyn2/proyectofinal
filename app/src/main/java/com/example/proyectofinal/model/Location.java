@@ -1,6 +1,7 @@
 package com.example.proyectofinal.model;
 
 public class Location {
+    private int id; // Agregado ID único
     private double latitude;
     private double longitude;
     private String imageUri;
@@ -17,6 +18,14 @@ public class Location {
         this.latitude = latitude;
         this.longitude = longitude;
         this.imageUri = imageUri;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public double getLatitude() {
